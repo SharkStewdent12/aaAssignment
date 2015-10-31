@@ -1,0 +1,298 @@
+
+public class Hand {
+	Card [] cards =new Card[2];
+	int highCard=0;
+	int highCard2=0;
+	int highCard3=0;
+
+	public void setHighCard(int highCard) {
+		this.highCard = highCard;
+	}
+
+	public int getHighCard() {
+		return highCard;
+	}
+
+	public Card[] getCards() {
+		return cards;
+	}
+
+	public void setCards(Card[] cards) {
+		this.cards = cards;		
+		if(cards[0].getValue()>cards[1].getValue()){
+			highCard=cards[0].getValue();
+			highCard2=cards[1].getValue();
+		}else{
+			highCard=cards[1].getValue();
+			highCard2=cards[0].getValue();
+		}
+		if(cards[0].getValue()==1){
+			highCard=14;
+			highCard2=cards[1].getValue();
+		}
+		if(cards[1].getValue()==1){
+			highCard=14;
+			highCard2=cards[0].getValue();
+		}
+	}
+
+	public int handValue(Flop flop) {
+		Card[] fullhand=makeSortedHand(flop);
+		if(isRoyalFlush(fullhand)){
+			return 9;
+		}
+		if(isStraightFlush(fullhand)){
+			return 8;
+		}
+		if(isFourOfAKind(fullhand)){
+			return 7;
+		}
+		if(isFullHouse(fullhand)){
+			return 6;
+		}
+		if(isFlush(fullhand)){
+			return 5;
+		}
+		if(isStraight(fullhand)){
+			return 4;
+		}
+		if(isThreeOfAKind(fullhand)){
+			return 3;
+		}
+		if(isTwoPair(fullhand)){
+			return 2;
+		}
+		if(isPair(fullhand)){
+			return 1;
+		}
+		return 0;
+	}
+
+	public Card[] makeSortedHand(Flop flop) {
+		Card[] hand=new Card[7];
+		for (int i = 0; i < 2; i++) {
+			hand[i]=cards[i];
+		}
+		for (int i = 0; i < 5; i++) {
+			hand[i+2]=flop.getCards()[i];
+		}
+		int j=0;
+		Card temp=null;
+		for (int i = 0; i < hand.length; i++) {
+			j=i;
+			while (j>0 && hand[j-1].getValue()>hand[j].getValue()){
+				temp=hand[j];
+				hand[j]=hand[j-1];
+				hand[j-1]=temp;
+				j--;
+			}					
+		}
+		return hand;
+	}
+	
+	private boolean isFlush(Card[] hand){
+		int[]count=new int[4];
+		for (int i = 0; i <hand.length; i++) {
+			count[hand[i].getSuit()]++;
+		}
+		for (int i = 0; i < count.length; i++) {
+			if(count[i]>=5){
+				if(hand[0].getValue()==1&&hand[0].getSuit()==i){
+					highCard=14;
+				}else if(hand[hand.length-1].getSuit()==i){
+					highCard=hand[hand.length-1].getValue();
+				}else{
+					highCard=hand[hand.length-2].getValue();
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+	private boolean isStraight(Card[] hand){
+		int count=0;
+		if(hand[0].getValue()==1 &&hand[hand.length-1].getValue()==13){
+			highCard=14;
+			count=1;
+		}
+		for (int i = hand.length-1; i >0; i--) {
+			if(hand[i].getValue()==hand[i-1].getValue()+1){
+				if(count==0){
+					highCard=hand[i].getValue();
+				}
+				count++;
+			}
+			else{
+				count=0;
+			}
+			if(count>=5){
+				return true;
+			}
+		}
+		return false;
+	}
+	private boolean isStraightFlush(Card[] hand){
+		int count=0;
+		if(hand[0].getValue()==1 &&hand[hand.length-1].getValue()==13&&hand[0].getSuit()==hand[hand.length-1].getSuit()){
+			highCard=14;
+			count=1;
+		}
+		for (int i = hand.length-1; i >0; i--) {
+			if(hand[i].getValue()==hand[i-1].getValue()+1 && hand[i].getSuit()==hand[i-1].getSuit()){
+				if(count==0){
+					highCard=hand[i].getValue();
+				}
+				count++;
+			}
+			else{
+				count=0;
+			}
+			if(count>=5){
+				return true;
+			}
+		}
+		return false;
+	}
+	private boolean isRoyalFlush(Card[] hand){
+		int count=0;
+		if(hand[0].getValue()==1 &&hand[hand.length-1].getValue()==13&&hand[0].getSuit()==hand[hand.length-1].getSuit()){
+			highCard=14;
+			count=1;
+		}
+		for (int i = hand.length-1; i >0; i--) {
+			if(hand[i].getValue()==hand[i-1].getValue()+1 && hand[i].getSuit()==hand[i-1].getSuit()){
+				if(count==0){
+					highCard=hand[i].getValue();
+				}
+				count++;
+			}
+			else{
+				count=0;
+			}
+			if(count>=5){
+				if(i+5==hand.length){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	private boolean isPair(Card[] hand){
+		int[]count=new int[13];
+		for (int i = 0; i <hand.length; i++) {
+			count[hand[i].getValue()-1]++;
+		}
+		if(count[0]>=2){
+			highCard=highCard2;
+			highCard2=14;
+			return true;
+		}
+		for (int i = count.length-1; i > 0; i--) {
+			if(count[i]==2){
+				if(highCard==i){
+					highCard=highCard2;
+				}
+				highCard2=i;
+				return true;
+			}
+		}
+		return false;
+	}
+	private boolean isTwoPair(Card[] hand){
+		int[]count=new int[13];
+		int count2=0;
+		for (int i = 0; i <hand.length; i++) {
+			count[hand[i].getValue()-1]++;
+		}
+		if(count[0]>=2){
+			highCard=highCard2;
+			highCard2=14;
+		}
+		for (int i = count.length-1; i > 0; i--) {
+			if(count[i]==2){
+				if(count2==0){
+					if(highCard==i){
+						highCard=highCard2;
+					}
+					highCard2=i;
+				}
+				count2++;
+				if(count2==2){
+					highCard3=i;
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+	private boolean isThreeOfAKind(Card[] hand){
+		int[]count=new int[13];
+		for (int i = 0; i <hand.length; i++) {
+			count[hand[i].getValue()-1]++;
+		}
+		if(count[0]==3){
+			highCard=highCard2;
+			highCard2=14;
+		}
+		for (int i = count.length-1; i > 0; i--) {
+			if(count[i]==3){
+				if(highCard==i){
+					highCard=highCard2;
+				}
+				highCard2=i;
+				return true;
+			}
+		}
+		return false;
+	}
+	private boolean isFourOfAKind(Card[] hand){
+		int[]count=new int[13];
+		for (int i = 0; i <hand.length; i++) {
+			count[hand[i].getValue()-1]++;
+		}
+		if(count[0]==4){
+			highCard=highCard2;
+			highCard2=14;
+		}
+		for (int i = count.length-1; i > 0; i--) {
+			if(count[i]==4){
+				if(highCard==i){
+					highCard=highCard2;
+				}
+				highCard2=i;
+				return true;
+			}
+		}
+		return false;
+	}
+	private boolean isFullHouse(Card[] hand){
+		int[]count=new int[13];
+		int count2=0,count3=0;
+		for (int i = 0; i <hand.length; i++) {
+			count[hand[i].getValue()-1]++;
+		}
+		if(count[0]==3){
+			count3++;
+			highCard3=14;
+		}
+		if(count[0]==2){
+			count2++;
+			highCard2=14;
+		}
+		for (int i = count.length-1; i > 0; i--) {
+			if(count[i]==2){
+				highCard2=i;
+				count2++;
+			}
+			if(count[i]==3){
+				highCard3=i;
+				count3++;
+			}
+		}
+		if(count2>=1&&count3>=1){
+			return true;
+		}
+		return false;
+	}
+}

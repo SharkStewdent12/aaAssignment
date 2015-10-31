@@ -1,0 +1,68 @@
+
+public class Card {
+	public static final int CLUBS= 0;
+	public static final int SPADES = 1;
+	public static final int HEARTS= 2;
+	public static final int DIAMONDS = 3;
+	public static final int Ace= 1;
+	public static final int Jack = 11;
+	public static final int Queen= 12;
+	public static final int King = 13;
+
+	private int suit;
+	private int value;
+
+
+	public Card(int suit, int value) {
+		this.suit = suit;
+		this.value = value;
+	}
+
+	@Override
+	public String toString() {
+		String str="";
+		switch(suit){
+		case SPADES:
+			str="s";
+			break;
+		case HEARTS:
+			str="h";
+			break;
+		case CLUBS:
+			str="c";
+			//str=""+(char)61558;
+			break;
+		case DIAMONDS:
+			str="d";
+			//str=""+(char)61556;
+		}
+		switch(value){
+		case Ace:
+			str+="A";
+			break;
+		case Jack:
+			str+="J";
+			break;
+		case Queen:
+			str+="Q";
+			break;
+		case King:
+			str+="K";
+			break;
+		default:
+			str+=""+value;
+			break;
+
+		}
+		return str;
+
+	}
+	public int getSuit() {
+		return suit;
+	}
+
+	public int getValue() {
+		return value;
+	}
+
+}

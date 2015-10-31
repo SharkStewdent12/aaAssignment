@@ -1,0 +1,10 @@
+
+public class AVLTree {
+
+	public void insert(int k)
+	{
+		AVLNode n = new AVLNode(k);
+	}
+	
+	
+}

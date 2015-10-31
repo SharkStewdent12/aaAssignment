@@ -1,0 +1,20 @@
+
+public class AVLNode {
+	public AVLNode left;
+	public AVLNode right;
+	public AVLNode parent;
+	public int key;
+	public int height;
+	public AVLNode(int key) {
+		this.left = null;
+		this.right = null;
+		this.parent = null;
+		this.key = key;
+		this.height = 0;
+	}
+	public int getBalance(){
+		return  right.height-left.height;
+	}
+	
+
+}

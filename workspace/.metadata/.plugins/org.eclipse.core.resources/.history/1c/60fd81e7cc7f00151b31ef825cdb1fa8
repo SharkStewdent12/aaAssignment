@@ -1,0 +1,56 @@
+
+public class AVLTree {
+
+	protected AVLNode root;
+	
+	public void insert(int k)
+	{
+		AVLNode n = new AVLNode(k);
+		insertAVL(this.root,n);
+	}
+	
+	public void recBalance(AVLNode cur)
+	{
+		int balance = cur.getBalance()
+	}
+	
+	
+	public void insertAVL(AVLNode x, AVLNode z)
+	{
+		if(x==null)
+		{
+			this.root = z;
+		}
+		else
+		{
+			if(z.key < x.key)
+			{
+				if(x.left == null)
+				{
+					x.left = z;
+					z.parent = x;
+					recBalance(x);
+				}
+				else
+				{
+					insertAVL(x.left,z);
+				}
+			}
+			else if (z.key > x.key)
+			{
+				if(x.right == null)
+				{
+					x.right = z;
+					z.parent = x;
+					recBalance(x);
+				}
+				else
+				{
+					insertAVL(x.right,z);
+				}
+			}
+		}
+	}
+	
+	
+}
