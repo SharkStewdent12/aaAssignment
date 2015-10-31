@@ -1,0 +1,97 @@
+import javax.swing.JOptionPane;
+
+
+public class Strategy {
+	Hand hand = new Hand();
+	Flop flop = new Flop();
+	public Hand getHand() {
+		return hand;
+	}
+	public void setHand(Hand hand) {
+		this.hand = hand;
+	}
+	public Flop getFlop() {
+		return flop;
+	}
+	public void setFlop(Flop flop) {
+		this.flop = flop;
+	}
+	public Strategy(Hand hand, Flop flop) {
+		super();
+		this.hand = hand;
+		this.flop = flop;
+	}
+	public static Action makeMove(int tag,Hand hand1, Flop flop2, Action action2) {
+		Action action1=new Action("check",0);
+		//basic strategy(control)
+		if(tag==0){
+			if(action2==null){
+				action1.setBet("check");
+				action1.setValue(0);
+			}else{
+				if(action2.getBet().equalsIgnoreCase("raise")){
+					action1.setBet("match");
+					action1.setValue(0);
+				}
+				if(action2.getBet().equalsIgnoreCase("bet")){
+					action1.setBet("match");
+					action1.setValue(0);
+				}
+				if(action2.getBet().equalsIgnoreCase("check")){
+					action1.setBet("check");
+					action1.setValue(0);
+				}
+				if(action2.getBet().equalsIgnoreCase("match")){
+					action1.setBet("check");
+					action1.setValue(0);
+				}
+			}
+		}
+		//for testing purposes
+//		if(tag==1){
+//			action1.setBet(JOptionPane.showInputDialog("enter bet"));
+//			action1.setValue(Integer.parseInt(JOptionPane.showInputDialog("enter value")));
+//		}
+		//bet 1
+		if(tag==1){
+			if(action2==null){
+				action1.setBet("bet");
+				action1.setValue(1);
+			}else{
+				if(action2.getBet().equalsIgnoreCase("raise")){
+					action1.setBet("match");
+					action1.setValue(0);
+				}
+				if(action2.getBet().equalsIgnoreCase("bet")){
+					action1.setBet("raise");
+					action1.setValue(1);
+				}
+				if(action2.getBet().equalsIgnoreCase("check")){
+					action1.setBet("raise");
+					action1.setValue(1);
+				}
+				if(action2.getBet().equalsIgnoreCase("match")){
+					action1.setBet("check");
+					action1.setValue(0);
+				}
+			}
+		}
+		// mock game
+		if (tag==2){
+			Card[]deck=new Card[52];
+			for (int i = 0; i < 4; i++) {
+				for (int j = 1; j < 14; j++) {
+					deck[i*13+j-1]=new Card(i, j);
+				}
+			}
+			deck[hand1.getCards()[0].getSuit()*13+hand1.getCards()[0].getSuit()-1]=null;
+			deck[hand1.getCards()[1].getSuit()*13+hand1.getCards()[1].getSuit()-1]=null;
+			deck[flop2.getCards()[0].getSuit()*13+flop2.getCards()[0].getSuit()-1]=null;
+			deck[flop2.getCards()[1].getSuit()*13+flop2.getCards()[1].getSuit()-1]=null;
+			deck[flop2.getCards()[2].getSuit()*13+flop2.getCards()[2].getSuit()-1]=null;
+		}
+		
+		return action1;
+	}
+
+}

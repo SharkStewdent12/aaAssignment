@@ -1,0 +1,12 @@
+
+public class AVLTree {
+
+	protected AVLNode root;
+	
+	public void insert(int k)
+	{
+		AVLNode n = new AVLNode(k);
+	}
+	
+	
+}

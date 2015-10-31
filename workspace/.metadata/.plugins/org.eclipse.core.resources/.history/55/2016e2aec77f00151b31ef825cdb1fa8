@@ -1,0 +1,196 @@
+
+public class Strategy {
+	Hand hand = new Hand();
+	Flop flop = new Flop();
+	final static int bigBet=4;
+	final static int smallBet=2;
+	final static int check=0;
+	final static int fold=-1;
+	public Hand getHand() {
+		return hand;
+	}
+	public void setHand(Hand hand) {
+		this.hand = hand;
+	}
+	public Flop getFlop() {
+		return flop;
+	}
+	public void setFlop(Flop flop) {
+		this.flop = flop;
+	}
+	public Strategy(Hand hand, Flop flop) {
+		super();
+		this.hand = hand;
+		this.flop = flop;
+	}
+	public static int makeMove(int tag,Hand hand1, Flop flop2, int action2) {
+		int action1=0;
+		//basic strategy(passive control)
+		if(tag==0){
+			action1=0;
+		}
+		//basic strategy(aggressive control)
+		if(tag==1){
+			action1=smallBet;
+		}
+		// mock game
+		if (tag==2){
+			int draw=0;
+			Card[]deck=new Card[52];
+			for (int i = 0; i < 4; i++) {
+				for (int j = 1; j < 14; j++) {
+					deck[i*13+j-1]=new Card(i, j);
+				}
+			}
+			int mark=0;
+			Flop sub=new Flop();
+			Hand hand2=new Hand();
+			deck[hand1.getCards()[0].getSuit()*13+hand1.getCards()[0].getValue()-1]=null;
+			deck[hand1.getCards()[1].getSuit()*13+hand1.getCards()[1].getValue()-1]=null;
+			for (int i=0;i<5;i++){
+				if(flop2.getCards()[i]!=null){
+					deck[flop2.getCards()[i].getSuit()*13+flop2.getCards()[i].getValue()-1]=null;
+					sub.addCard(flop2.getCards()[i]);
+					mark++;
+				}
+				else{
+					draw=(int) (Math.random()*52);
+					while(deck[draw]==null){
+						draw=(int) (Math.random()*52);
+					}
+					sub.addCard(deck[draw]);
+					deck[draw]=null;
+				}
+			}
+			if(flop2.getCards()[4]!=null){
+				deck[flop2.getCards()[4].getSuit()*13+flop2.getCards()[4].getValue()-1]=null;
+				sub.addCard(flop2.getCards()[0]);
+				mark=5;
+			}else{
+				draw=(int) (Math.random()*52);
+				while(deck[draw]==null){
+					draw=(int) (Math.random()*52);
+				}
+				sub.addCard(deck[draw]);
+				deck[draw]=null;
+			}
+
+			Card[]tempCards=new Card[2];
+			for (int i = 0; i < 2; i++) {
+				draw=(int) (Math.random()*52);
+				while(deck[draw]==null){
+					draw=(int) (Math.random()*52);
+				}
+				tempCards[i]=deck[draw];
+				deck[draw]=null;
+			}
+			hand2.setCards(tempCards);
+			Hand winner=Main.calculateWinner(hand1,hand2,sub);
+			switch(mark){
+			case 0:
+				action1=smallBet;
+				if(winner.equals(hand1)){
+					action1=bigBet;
+				}
+				if(winner.equals(hand2)){
+					action1=check;
+				}
+			case 3:
+				action1=smallBet;
+				if(winner.equals(hand1)){
+					action1=bigBet;
+				}
+				if(winner.equals(hand2)){
+					action1=check;
+				}
+			case 4:
+				action1=smallBet;
+				if(winner.equals(hand1)){
+					action1=bigBet;
+				}
+				if(winner.equals(hand2)){
+					action1=check;
+				}
+			case 5:
+				action1=smallBet;
+				if(winner.equals(hand1)){
+					action1=bigBet;
+				}
+				if(winner.equals(hand2)){
+					action1=check;
+				}
+			}
+		}
+		
+		//outs
+		if(tag==3){
+			int outs=0;
+			int flopCount=0;
+			for (int i = 0; i < flop2.getCards().length; i++) {
+				if(flop2.getCards()[i]!=null){
+					flopCount++;
+				}
+				else{break;}
+			}
+			switch(flopCount){
+				case 0:
+					action1=check;
+				case 3:
+					outs=calculateOutsFlop(hand1, flop2);
+				case 4:
+					outs=calculateOutsTurn(hand1, flop2);
+				case 5:
+					if(hand1.handValue(flop2)>3){
+						action1=smallBet;
+					}else{
+						action1=check;
+					}
+			}
+			
+		}
+		
+		return action1;
+	}
+	private static int calculateOutsFlop(Hand hand1, Flop flop2) {
+		if(flush(hand1, flop2)){
+			return 9;
+		}
+		if(innerStraight(hand1, flop2)){
+			return 4;
+		}
+		if(outerStraight(hand1, flop2)){
+			return 8;
+		}
+		if(three(hand1, flop2)){
+			return 6;
+		}
+		if(twoPair(hand1, flop2)){
+			return 4;
+		}
+		return 0;
+	}
+	private static boolean outerStraight(Hand hand1, Flop flop2) {
+		Card[] hand=hand1.makeSortedHand(flop2);
+		if(isStraight(hand)){
+			return true;
+		}
+		return false;
+	}
+	private static boolean isStraight(Card[] hand){
+		int count=0;
+		for (int i = hand.length-1; i >0; i--) {
+			if(hand[i].getValue()==hand[i-1].getValue()+1){
+				count++;
+			}
+			else{
+				count=0;
+			}
+			if(count>=4){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+}

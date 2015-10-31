@@ -1,0 +1,149 @@
+
+
+public class Main {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		int numStrats=2;
+		int [] stratArray=new int[numStrats];
+		for (int i = 0; i < stratArray.length; i++) {			
+			stratArray[i]=i;
+		}
+		Card[]deck=new Card[52];
+		for (int i = 0; i < 4; i++) {
+			for (int j = 1; j < 14; j++) {
+				deck[i*13+j-1]=new Card(i, j);
+			}
+		}
+		Hand hand1=new Hand();
+		Hand hand2=new Hand();
+		Flop flop=new Flop();
+//		Card[] flop=new Card[3];
+		int pots[]=new int[stratArray.length];
+		int pot=0;
+		Action action1=null,action2=null;
+		int draw=0;
+		//deal hand1
+		Card[]tempCards=new Card[2];
+		for (int i = 0; i < 2; i++) {
+			draw=(int) (Math.random()*52);
+			while(deck[draw]==null){
+				draw=(int) (Math.random()*52);
+			}
+			tempCards[i]=deck[draw];
+			deck[draw]=null;
+		}
+		hand1.setCards(tempCards);
+		System.out.println("player 1: "+hand1.getCards()[0].toString()+" "+hand1.getCards()[1].toString());
+		//deal hand2
+		Card[]tempCards2=new Card[2];
+		for (int i = 0; i < 2; i++) {
+			draw=(int) (Math.random()*52);
+			while(deck[draw]==null){
+				draw=(int) (Math.random()*52);
+			}
+			tempCards2[i]=deck[draw];
+			deck[draw]=null;
+		}
+
+		hand2.setCards(tempCards2);
+		System.out.println("player 2: "+hand2.getCards()[0].toString()+" "+hand2.getCards()[1].toString());
+		action1=Strategy.makeMove(stratArray[0],hand1,flop,action2);
+		System.out.println("player 1: "+action1.getBet()+" "+action1.getValue());
+		action2=Strategy.makeMove(stratArray[1],hand2,flop,action1);
+		System.out.println("player 2: "+action2.getBet()+" "+action1.getValue());
+		if(action2.getBet().equalsIgnoreCase("raise")){
+			action1=Strategy.makeMove(stratArray[0],hand1,flop,action2);
+			System.out.println("player 1: "+action1.getBet()+" "+action1.getValue());
+		}
+		pot=pot+action1.getValue()+action2.getValue();
+		//deal initial flop
+		for (int i = 0; i < 3; i++) {
+			draw=(int) (Math.random()*52);
+			while(deck[draw]==null){
+				draw=(int) (Math.random()*52);
+				
+			}
+			flop.addCard(deck[draw]);
+			deck[draw]=null;
+		}
+		System.out.println("flop: "+flop.getCards()[0].toString()+" "+flop.getCards()[1].toString()+" "+flop.getCards()[2].toString());
+		action1=Strategy.makeMove(stratArray[0],hand1,flop,action2);
+		System.out.println("player 1: "+action1.getBet()+" "+action1.getValue());
+		action2=Strategy.makeMove(stratArray[1],hand2,flop,action1);
+		System.out.println("player 2: "+action2.getBet()+" "+action1.getValue());
+		if(action2.getBet().equalsIgnoreCase("raise")){
+			action1=Strategy.makeMove(stratArray[0],hand1,flop,action2);
+			System.out.println("player 1: "+action1.getBet()+" "+action1.getValue());
+		}
+		pot=pot+action1.getValue()+action2.getValue();
+		//next two betting rounds
+		for (int i = 0; i < 2; i++) {
+			draw=(int) (Math.random()*52);
+			while(deck[draw]==null){
+				draw=(int) (Math.random()*52);
+				
+			}
+			flop.addCard(deck[draw]);
+			deck[draw]=null;
+			if(i==1){
+				System.out.println("flop: "+flop.getCards()[0].toString()+" "+flop.getCards()[1].toString()+" "+flop.getCards()[2].toString()+" "+flop.getCards()[3].toString()+" "+flop.getCards()[4].toString());
+			}else{
+				System.out.println("flop: "+flop.getCards()[0].toString()+" "+flop.getCards()[1].toString()+" "+flop.getCards()[2].toString()+" "+flop.getCards()[3].toString());
+			}
+			action1=Strategy.makeMove(stratArray[0],hand1,flop,action2);
+			System.out.println("player 1: "+action1.getBet()+" "+action1.getValue());
+			action2=Strategy.makeMove(stratArray[1],hand2,flop,action1);
+			System.out.println("player 2: "+action2.getBet()+" "+action1.getValue());
+			if(action2.getBet().equalsIgnoreCase("raise")){
+				action1=Strategy.makeMove(stratArray[0],hand1,flop,action2);
+				System.out.println("player 1: "+action1.getBet()+" "+action1.getValue());
+			}
+			pot=pot+action1.getValue()+action2.getValue();
+			
+		}
+
+		Hand winner=calculateWinner(hand1,hand2,flop);
+		if(winner==hand1){
+			pots[0]=pots[0]+pot;
+			pots[1]=pots[1]-pot;
+		}else if(winner==hand2){
+			pots[0]=pots[0]-pot;
+			pots[1]=pots[1]+pot;
+		}
+		pot=0;
+		System.out.println("Player1 pot: "+pots[0]);
+		System.out.println("Player2 pot: "+pots[1]);
+	}
+
+	private static Hand calculateWinner(Hand hand1, Hand hand2, Flop flop) {
+		Hand winner=null;
+		if(hand1.handValue(flop)>hand2.handValue(flop)){
+			winner=hand1;
+			System.out.println("winner: player1");
+		}
+		if(hand2.handValue(flop)>hand1.handValue(flop)){
+			winner=hand2;
+			System.out.println("winner: player2");
+		}
+		if(hand2.handValue(flop)==hand1.handValue(flop)){
+			System.out.println(hand1.getHighCard()+" "+hand2.getHighCard());
+			if(hand1.getHighCard()>hand2.getHighCard()){
+				winner=hand1;
+				System.out.println("winner: player1");
+			}
+			if(hand2.getHighCard()>hand1.getHighCard()){
+				winner=hand2;
+				System.out.println("winner: player2");
+			}
+			if(hand1.getHighCard()==hand2.getHighCard()){
+				winner=null;
+				System.out.println("It is draw");
+			}
+		}
+		return winner;
+	}
+
+}
