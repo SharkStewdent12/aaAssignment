@@ -1,13 +1,13 @@
 /** Here is the AVL-Node class for Completenesse **/
 public class AvlNode {
-	public AvlNode left;
-	public AvlNode right;
+	public AvlNode leftChild;
+	public AvlNode rightChild;
 	public AvlNode parent;
 	public int key;
 	public int height;
 
 	public AvlNode(int k) {
-		left = right = parent = null;  
+		leftChild = rightChild = parent = null;  
 		key = k;
 		height = 0;
 	}
@@ -19,16 +19,16 @@ public class AvlNode {
 
 		int leftHeight, rightHeight;
 
-		if (left == null) {
+		if (leftChild == null) {
 			leftHeight = 0;
 		} else { //has left and right children
-			leftHeight = left.height + 1;
+			leftHeight = leftChild.height + 1;
 		}
 
-		if (right == null) {
+		if (rightChild == null) {
 			rightHeight = 0;
 		} else { //has left and right children
-			rightHeight = right.height + 1;
+			rightHeight = rightChild.height + 1;
 		}
 
 		return rightHeight - leftHeight;
@@ -36,14 +36,14 @@ public class AvlNode {
 
 	public void reviseHeight() {
 
-		if ( (left == null) && (right==null))  { //leaf node, no children
+		if ( (leftChild == null) && (rightChild==null))  { //leaf node, no children
 			height = 0;
-		} else if (left == null) { //only has right child
-			height = right.height + 1;
-		} else if (right == null) { //only has left child
-			height = left.height + 1;
+		} else if (leftChild == null) { //only has right child
+			height = rightChild.height + 1;
+		} else if (rightChild == null) { //only has left child
+			height = leftChild.height + 1;
 		} else { //has left and right children
-			height = Math.max(left.height, right.height) + 1;
+			height = Math.max(leftChild.height, rightChild.height) + 1;
 		}
 	}
 
