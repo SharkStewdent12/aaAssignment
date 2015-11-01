@@ -23,6 +23,8 @@ public class AvlTree {
 		tree.insert(26);
 		list = tree.inorder();
 		System.out.println(list.toString());
+		
+		tree.debug( tree.root );
 
 	}
 
@@ -305,37 +307,17 @@ public class AvlTree {
 		}
 	}
 
+
 //	/**
-//	 * Calculating the "height" of a node.
-//	 * 
-//	 * @param cur
-//	 * @return The height of a node (-1, if node is not existent eg. NULL).
+//	 * Return the maximum of two integers.
 //	 */
-//	private int height(AvlNode cur) {
-//		if(cur==null) {
-//			return -1;
-//		}
-//		if(cur.leftChild==null && cur.rightChild==null) {
-//			return 0;
-//		} else if(cur.leftChild==null) {
-//			return 1+height(cur.rightChild);
-//		} else if(cur.rightChild==null) {
-//			return 1+height(cur.leftChild);
+//	private int maximum(int a, int b) {
+//		if(a>=b) {
+//			return a;
 //		} else {
-//			return 1+maximum(height(cur.leftChild),height(cur.rightChild));
+//			return b;
 //		}
 //	}
-
-	/**
-	 * Return the maximum of two integers.
-	 */
-	private int maximum(int a, int b) {
-		if(a>=b) {
-			return a;
-		} else {
-			return b;
-		}
-	}
 
 	/** 
 	 * Only for debugging purposes. Gives all information about a node.
