@@ -18,6 +18,19 @@ public class AvlTree {
 		tree.insert(11);
 		tree.insert(12);
 		tree.insert(26);
+
+		tree.insert(14);
+		tree.insert(7);
+		tree.insert(12);
+		tree.insert(8);
+
+		tree.insert(21);
+		tree.insert(27);
+		tree.insert(22);
+		tree.insert(25);
+		tree.insert(29);	
+
+
 		list = tree.inorder();
 		System.out.println(list.toString());
 
@@ -44,28 +57,43 @@ public class AvlTree {
 				if(subtreeRoot.leftChild==null) {
 					subtreeRoot.leftChild = newNode;
 					newNode.parent = subtreeRoot;
-					
+
+					root.recursiveFixHeight();;
 					avlBalance(subtreeRoot);
 				} else { //insert into left subtree
 					insertAVL(subtreeRoot.leftChild,newNode);
 				}
-			// Key larger (or equal), send right
+				// Key larger (or equal), send right
 			} else {
 				if(subtreeRoot.rightChild==null) { //free leaf, add node
 					subtreeRoot.rightChild = newNode;
 					newNode.parent = subtreeRoot;
 
-					// Node is inserted now, continue checking the balance
+					root.recursiveFixHeight();
 					avlBalance(subtreeRoot);
 				} else { //insert into right subtree
 					insertAVL(subtreeRoot.rightChild,newNode);
 				}
-			} 
+			}
+
+			//			avlBalance(subtreeRoot);
+
+
+			//			root.recursiveFixHeight();
+			//			newNode.reviseHeight();
+			//			subtreeRoot.reviseHeight();
+			//			if (subtreeRoot.leftChild != null){
+			//				subtreeRoot.leftChild.reviseHeight();
+			//			}
+			//			if (subtreeRoot.rightChild != null){
+			//				subtreeRoot.rightChild.reviseHeight();
+			//			}			
+
 		}
 	}
 
 
-	public void avlBalance(AvlNode subtreeRoot) {
+	public void avlBalance(AvlNode subtreeRoot) {		
 
 		if (subtreeRoot.balance() == -2) { //left subtree is taller
 			if ( subtreeRoot.leftChild.rightChild.height >= subtreeRoot.leftChild.leftChild.height ) {
@@ -78,6 +106,8 @@ public class AvlTree {
 			}
 			subtreeRoot = leftRotate(subtreeRoot);
 		}
+		
+		root.recursiveFixHeight();
 
 	}
 
@@ -167,7 +197,7 @@ public class AvlTree {
 			} else if(newSubtreeRoot.parent.leftChild==origSubtreeRoot) {
 				newSubtreeRoot.parent.leftChild = newSubtreeRoot;
 			}
-		}
+		}		
 
 
 		return newSubtreeRoot;
@@ -235,7 +265,7 @@ public class AvlTree {
 			p = n.parent.key;
 		}
 
-		System.out.println("Left: "+l+" Key: "+n+" Right: "+r+" Parent: "+p+" Balance: "+n.balance());
+		System.out.println("Left: "+l+" Key: "+n+" Right: "+r+" Parent: "+p+" Balance: "+n.balance() + " Height: "+n.height);
 
 		if(n.leftChild!=null) {
 			debug(n.leftChild);
