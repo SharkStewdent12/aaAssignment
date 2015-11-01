@@ -23,7 +23,7 @@ public class AvlTree {
 		tree.insert(26);
 		list = tree.inorder();
 		System.out.println(list.toString());
-		
+
 		tree.debug( tree.root );
 
 	}
@@ -54,32 +54,28 @@ public class AvlTree {
 		if(subtreeRoot==null) {
 			this.root=newNode;
 		} else {
-
-			// If compare node is smaller, continue with the left node
-			if(newNode.key<subtreeRoot.key) {
+			// Key smaller, send left
+			if(newNode.key<subtreeRoot.key) { //free leaf, add node
 				if(subtreeRoot.leftChild==null) {
 					subtreeRoot.leftChild = newNode;
 					newNode.parent = subtreeRoot;
-
-					// Node is inserted now, continue checking the balance
-					recursiveBalance(subtreeRoot);
-				} else {
+					
+					avlBalance(subtreeRoot);
+				} else { //insert into left subtree
 					insertAVL(subtreeRoot.leftChild,newNode);
 				}
-
-			} else if(newNode.key>subtreeRoot.key) {
-				if(subtreeRoot.rightChild==null) {
+			// Key larger (or equal), send right
+			} else {
+				if(subtreeRoot.rightChild==null) { //free leaf, add node
 					subtreeRoot.rightChild = newNode;
 					newNode.parent = subtreeRoot;
 
 					// Node is inserted now, continue checking the balance
-					recursiveBalance(subtreeRoot);
-				} else {
+					avlBalance(subtreeRoot);
+				} else { //insert into right subtree
 					insertAVL(subtreeRoot.rightChild,newNode);
 				}
-			} else {
-				// do nothing: This node already exists
-			}
+			} 
 		}
 	}
 
@@ -88,7 +84,7 @@ public class AvlTree {
 	 * 
 	 * @param subtreeRoot : The node to check the balance for, usually you start with the parent of a leaf.
 	 */
-	public void recursiveBalance(AvlNode subtreeRoot) {
+	public void avlBalance(AvlNode subtreeRoot) {
 
 		if (subtreeRoot.balance() == -2) { //left subtree is taller
 			if ( subtreeRoot.leftChild.rightChild.height >= subtreeRoot.leftChild.leftChild.height ) {
@@ -102,12 +98,6 @@ public class AvlTree {
 			subtreeRoot = leftRotate(subtreeRoot);
 		}
 
-		// we did not reach the root yet
-		if(subtreeRoot.parent!=null) {
-			recursiveBalance(subtreeRoot.parent);
-		} else {
-			this.root = subtreeRoot;
-		}
 	}
 
 	/**
@@ -181,7 +171,7 @@ public class AvlTree {
 				r.parent.rightChild = p;
 			}
 			// balancing must be done until the root is reached.
-			recursiveBalance(r.parent);
+			avlBalance(r.parent);
 		}
 		r = null;
 	}
@@ -283,16 +273,16 @@ public class AvlTree {
 	}
 
 
-//	/**
-//	 * Return the maximum of two integers.
-//	 */
-//	private int maximum(int a, int b) {
-//		if(a>=b) {
-//			return a;
-//		} else {
-//			return b;
-//		}
-//	}
+	//	/**
+	//	 * Return the maximum of two integers.
+	//	 */
+	//	private int maximum(int a, int b) {
+	//		if(a>=b) {
+	//			return a;
+	//		} else {
+	//			return b;
+	//		}
+	//	}
 
 	/** 
 	 * Only for debugging purposes. Gives all information about a node.
