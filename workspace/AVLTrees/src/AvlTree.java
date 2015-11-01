@@ -86,34 +86,27 @@ public class AvlTree {
 	/**
 	 * Check the balance for each node recursivly and call required methods for balancing the tree until the root is reached.
 	 * 
-	 * @param curNode : The node to check the balance for, usually you start with the parent of a leaf.
+	 * @param subtreeRoot : The node to check the balance for, usually you start with the parent of a leaf.
 	 */
-	public void recursiveBalance(AvlNode curNode) {
+	public void recursiveBalance(AvlNode subtreeRoot) {
 
-		// we do not use the balance in this class, but the store it anyway  
-		int balance = curNode.balance();
-
-		// check the balance
-		if(balance==-2) {
-			if(curNode.leftChild.leftChild.height>=curNode.leftChild.rightChild.height) {
-				curNode = rotateRight(curNode);
-			} else {
-				curNode = doubleRotateLeftRight(curNode);
+		if (subtreeRoot.balance() == -2) { //left subtree is taller
+			if ( subtreeRoot.leftChild.rightChild.height >= subtreeRoot.leftChild.leftChild.height ) {
+				subtreeRoot.leftChild = leftRotate(subtreeRoot.leftChild);
 			}
-		} else if(balance==2) {
-			if(curNode.rightChild.rightChild.height>=curNode.rightChild.leftChild.height) {
-				curNode = rotateLeft(curNode);
-			} else {
-				curNode = doubleRotateRightLeft(curNode);
+			subtreeRoot = rightRotate(subtreeRoot);
+		} else if (subtreeRoot.balance() == 2) { //right subtree is taller
+			if ( subtreeRoot.rightChild.leftChild.height >= subtreeRoot.rightChild.rightChild.height ) {
+				subtreeRoot.rightChild = rightRotate(subtreeRoot.rightChild);
 			}
+			subtreeRoot = leftRotate(subtreeRoot);
 		}
 
 		// we did not reach the root yet
-		if(curNode.parent!=null) {
-			recursiveBalance(curNode.parent);
+		if(subtreeRoot.parent!=null) {
+			recursiveBalance(subtreeRoot.parent);
 		} else {
-			this.root = curNode;
-			System.out.println("------------ Balancing finished ----------------");
+			this.root = subtreeRoot;
 		}
 	}
 
@@ -197,90 +190,72 @@ public class AvlTree {
 	 * Left rotation using the given node.
 	 * 
 	 * 
-	 * @param n
+	 * @param origSubtreeRoot
 	 *            The node for the rotation.
 	 * 
 	 * @return The root of the rotated tree.
 	 */
-	public AvlNode rotateLeft(AvlNode n) {
+	public AvlNode leftRotate(AvlNode origSubtreeRoot) {
 
-		AvlNode v = n.rightChild;
-		v.parent = n.parent;
+		AvlNode newSubtreeRoot = origSubtreeRoot.rightChild;
+		newSubtreeRoot.parent = origSubtreeRoot.parent;
 
-		n.rightChild = v.leftChild;
+		origSubtreeRoot.rightChild = newSubtreeRoot.leftChild;
 
-		if(n.rightChild!=null) {
-			n.rightChild.parent=n;
+		if(origSubtreeRoot.rightChild!=null) {
+			origSubtreeRoot.rightChild.parent=origSubtreeRoot;
 		}
 
-		v.leftChild = n;
-		n.parent = v;
+		newSubtreeRoot.leftChild = origSubtreeRoot;
+		origSubtreeRoot.parent = newSubtreeRoot;
 
-		if(v.parent!=null) {
-			if(v.parent.rightChild==n) {
-				v.parent.rightChild = v;
-			} else if(v.parent.leftChild==n) {
-				v.parent.leftChild = v;
+		if(newSubtreeRoot.parent!=null) {
+			if(newSubtreeRoot.parent.rightChild==origSubtreeRoot) {
+				newSubtreeRoot.parent.rightChild = newSubtreeRoot;
+			} else if(newSubtreeRoot.parent.leftChild==origSubtreeRoot) {
+				newSubtreeRoot.parent.leftChild = newSubtreeRoot;
 			}
 		}
 
 
-		return v;
+		return newSubtreeRoot;
 	}
 
 	/**
 	 * Right rotation using the given node.
 	 * 
-	 * @param n
+	 * @param origSubtreeRoot
 	 *            The node for the rotation
 	 * 
 	 * @return The root of the new rotated tree.
 	 */
-	public AvlNode rotateRight(AvlNode n) {
+	public AvlNode rightRotate(AvlNode origSubtreeRoot) {
 
-		AvlNode v = n.leftChild;
-		v.parent = n.parent;
+		AvlNode newSubtreeRoot = origSubtreeRoot.leftChild;
+		newSubtreeRoot.parent = origSubtreeRoot.parent;
 
-		n.leftChild = v.rightChild;
+		origSubtreeRoot.leftChild = newSubtreeRoot.rightChild;
 
-		if(n.leftChild!=null) {
-			n.leftChild.parent=n;
+		if(origSubtreeRoot.leftChild!=null) {
+			origSubtreeRoot.leftChild.parent=origSubtreeRoot;
 		}
 
-		v.rightChild = n;
-		n.parent = v;
+		newSubtreeRoot.rightChild = origSubtreeRoot;
+		origSubtreeRoot.parent = newSubtreeRoot;
 
 
-		if(v.parent!=null) {
-			if(v.parent.rightChild==n) {
-				v.parent.rightChild = v;
-			} else if(v.parent.leftChild==n) {
-				v.parent.leftChild = v;
+		if(newSubtreeRoot.parent!=null) {
+			if(newSubtreeRoot.parent.rightChild==origSubtreeRoot) {
+				newSubtreeRoot.parent.rightChild = newSubtreeRoot;
+			} else if(newSubtreeRoot.parent.leftChild==origSubtreeRoot) {
+				newSubtreeRoot.parent.leftChild = newSubtreeRoot;
 			}
 		}
 
 
-		return v;
-	}
-	/**
-	 * 
-	 * @param u The node for the rotation.
-	 * @return The root after the double rotation.
-	 */
-	public AvlNode doubleRotateLeftRight(AvlNode u) {
-		u.leftChild = rotateLeft(u.leftChild);
-		return rotateRight(u);
+		return newSubtreeRoot;
 	}
 
-	/**
-	 * 
-	 * @param u The node for the rotation.
-	 * @return The root after the double rotation.
-	 */
-	public AvlNode doubleRotateRightLeft(AvlNode u) {
-		u.rightChild = rotateRight(u.rightChild);
-		return rotateLeft(u);
-	}
 
 	/***************************** Helper Functions ************************************/
 
