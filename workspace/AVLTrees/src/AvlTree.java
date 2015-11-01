@@ -93,14 +93,13 @@ public class AvlTree {
 
 		// check the balance
 		if(balance==-2) {
-
-			if(height(curNode.leftChild.leftChild)>=height(curNode.leftChild.rightChild)) {
+			if(curNode.leftChild.leftChild.height>=curNode.leftChild.rightChild.height) {
 				curNode = rotateRight(curNode);
 			} else {
 				curNode = doubleRotateLeftRight(curNode);
 			}
 		} else if(balance==2) {
-			if(height(curNode.rightChild.rightChild)>=height(curNode.rightChild.leftChild)) {
+			if(curNode.rightChild.rightChild.height>=curNode.rightChild.leftChild.height) {
 				curNode = rotateLeft(curNode);
 			} else {
 				curNode = doubleRotateRightLeft(curNode);
@@ -306,26 +305,26 @@ public class AvlTree {
 		}
 	}
 
-	/**
-	 * Calculating the "height" of a node.
-	 * 
-	 * @param cur
-	 * @return The height of a node (-1, if node is not existent eg. NULL).
-	 */
-	private int height(AvlNode cur) {
-		if(cur==null) {
-			return -1;
-		}
-		if(cur.leftChild==null && cur.rightChild==null) {
-			return 0;
-		} else if(cur.leftChild==null) {
-			return 1+height(cur.rightChild);
-		} else if(cur.rightChild==null) {
-			return 1+height(cur.leftChild);
-		} else {
-			return 1+maximum(height(cur.leftChild),height(cur.rightChild));
-		}
-	}
+//	/**
+//	 * Calculating the "height" of a node.
+//	 * 
+//	 * @param cur
+//	 * @return The height of a node (-1, if node is not existent eg. NULL).
+//	 */
+//	private int height(AvlNode cur) {
+//		if(cur==null) {
+//			return -1;
+//		}
+//		if(cur.leftChild==null && cur.rightChild==null) {
+//			return 0;
+//		} else if(cur.leftChild==null) {
+//			return 1+height(cur.rightChild);
+//		} else if(cur.rightChild==null) {
+//			return 1+height(cur.leftChild);
+//		} else {
+//			return 1+maximum(height(cur.leftChild),height(cur.rightChild));
+//		}
+//	}
 
 	/**
 	 * Return the maximum of two integers.
