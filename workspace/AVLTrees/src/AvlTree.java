@@ -1,9 +1,6 @@
 
 import java.util.ArrayList;
 
-/**
- * This class is the complete and tested implementation of an AVL-tree.
- */
 public class AvlTree {
 
 	protected AvlNode root; // the root node
@@ -28,14 +25,7 @@ public class AvlTree {
 
 	}
 
-	/***************************** Core Functions ************************************/
 
-	/**
-	 * Add a new element with key "k" into the tree.
-	 * 
-	 * @param k
-	 *            The key of the new node.
-	 */
 	public void insert(int k) {
 		// create new node
 		AvlNode n = new AvlNode(k);
@@ -43,12 +33,7 @@ public class AvlTree {
 		insertAVL(this.root,n);
 	}
 
-	/**
-	 * Recursive method to insert a node into a tree.
-	 * 
-	 * @param subtreeRoot The node currently compared, usually you start with the root.
-	 * @param newNode The node to be inserted.
-	 */
+
 	public void insertAVL(AvlNode subtreeRoot, AvlNode newNode) {
 		// If  node to compare is null, the node is inserted. If the root is null, it is the root of the tree.
 		if(subtreeRoot==null) {
@@ -79,11 +64,7 @@ public class AvlTree {
 		}
 	}
 
-	/**
-	 * Check the balance for each node recursivly and call required methods for balancing the tree until the root is reached.
-	 * 
-	 * @param subtreeRoot : The node to check the balance for, usually you start with the parent of a leaf.
-	 */
+
 	public void avlBalance(AvlNode subtreeRoot) {
 
 		if (subtreeRoot.balance() == -2) { //left subtree is taller
@@ -100,20 +81,13 @@ public class AvlTree {
 
 	}
 
-	/**
-	 * Removes a node from the tree, if it is existent.
-	 */
+
 	public void remove(int node) {
 		// First we must find the node, after this we can delete it.
 		removeAVL(this.root,node);
 	}
 
-	/**
-	 * Finds a node and calls a method to remove the node.
-	 * 
-	 * @param subtreeRoot The node to start the search.
-	 * @param targetKey The KEY of node to remove.
-	 */
+
 	public void removeAVL(AvlNode subtreeRoot,int targetKey) {
 		if(subtreeRoot==null) {
 			return;
@@ -129,11 +103,7 @@ public class AvlTree {
 		}
 	}
 
-	/**
-	 * Removes a node from a AVL-Tree, while balancing will be done if necessary.
-	 * 
-	 * @param targetNode The node to be removed.
-	 */
+
 	public void removeFoundNode(AvlNode targetNode) {
 		AvlNode r;
 		// at least one child of q, q will be removed directly
@@ -176,15 +146,7 @@ public class AvlTree {
 		r = null;
 	}
 
-	/**
-	 * Left rotation using the given node.
-	 * 
-	 * 
-	 * @param origSubtreeRoot
-	 *            The node for the rotation.
-	 * 
-	 * @return The root of the rotated tree.
-	 */
+
 	public AvlNode leftRotate(AvlNode origSubtreeRoot) {
 
 		AvlNode newSubtreeRoot = origSubtreeRoot.rightChild;
@@ -211,14 +173,7 @@ public class AvlTree {
 		return newSubtreeRoot;
 	}
 
-	/**
-	 * Right rotation using the given node.
-	 * 
-	 * @param origSubtreeRoot
-	 *            The node for the rotation
-	 * 
-	 * @return The root of the new rotated tree.
-	 */
+
 	public AvlNode rightRotate(AvlNode origSubtreeRoot) {
 
 		AvlNode newSubtreeRoot = origSubtreeRoot.leftChild;
@@ -247,14 +202,7 @@ public class AvlTree {
 	}
 
 
-	/***************************** Helper Functions ************************************/
 
-	/**
-	 * Returns the successor of a given node in the tree (search recursivly).
-	 * 
-	 * @param q The predecessor.
-	 * @return The successor of node q.
-	 */
 	public AvlNode successor(AvlNode q) {
 		if(q.rightChild!=null) {
 			AvlNode r = q.rightChild;
@@ -273,22 +221,6 @@ public class AvlTree {
 	}
 
 
-	//	/**
-	//	 * Return the maximum of two integers.
-	//	 */
-	//	private int maximum(int a, int b) {
-	//		if(a>=b) {
-	//			return a;
-	//		} else {
-	//			return b;
-	//		}
-	//	}
-
-	/** 
-	 * Only for debugging purposes. Gives all information about a node.
-
-	 * @param n The node to write information about.
-	 */
 	public void debug(AvlNode n) {
 		int l = 0;
 		int r = 0;
@@ -314,25 +246,13 @@ public class AvlTree {
 	}
 
 
-	/**
-	 * Calculates the Inorder traversal of this tree.
-	 * 
-	 * @return A Array-List of the tree in inorder traversal.
-	 */
 	final protected ArrayList<AvlNode> inorder() {
 		ArrayList<AvlNode> ret = new ArrayList<AvlNode>();
 		inorder(root, ret);
 		return ret;
 	}
 
-	/**
-	 * Function to calculate inorder recursivly.
-	 * 
-	 * @param n
-	 *            The current node.
-	 * @param io
-	 *            The list to save the inorder traversal.
-	 */
+
 	final protected void inorder(AvlNode n, ArrayList<AvlNode> io) {
 		if (n == null) {
 			return;

@@ -1,4 +1,3 @@
-/** Here is the AVL-Node class for Completenesse **/
 public class AvlNode {
 	public AvlNode leftChild;
 	public AvlNode rightChild;
