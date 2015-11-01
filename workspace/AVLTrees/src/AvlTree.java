@@ -88,9 +88,8 @@ public class AvlTree {
   */
  public void recursiveBalance(AvlNode cur) {
   
-  // we do not use the balance in this class, but the store it anyway
-  setBalance(cur);
-  int balance = cur.balance;
+  // we do not use the balance in this class, but the store it anyway  
+  int balance = cur.balance();
   
   // check the balance
   if(balance==-2) {
@@ -225,8 +224,6 @@ public class AvlTree {
    }
   }
   
-  setBalance(n);
-  setBalance(v);
   
   return v;
  }
@@ -262,8 +259,6 @@ public class AvlTree {
    }
   }
   
-  setBalance(n);
-  setBalance(v);
   
   return v;
  }
@@ -363,7 +358,7 @@ public class AvlTree {
    p = n.parent.key;
   }
   
-  System.out.println("Left: "+l+" Key: "+n+" Right: "+r+" Parent: "+p+" Balance: "+n.balance);
+  System.out.println("Left: "+l+" Key: "+n+" Right: "+r+" Parent: "+p+" Balance: "+n.balance());
   
   if(n.left!=null) {
    debug(n.left);
@@ -372,10 +367,7 @@ public class AvlTree {
    debug(n.right);
   }
  }
- 
- private void setBalance(AvlNode cur) {
-  cur.balance = height(cur.right)-height(cur.left);
- }
+
  
  /**
   * Calculates the Inorder traversal of this tree.
