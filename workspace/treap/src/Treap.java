@@ -258,5 +258,7 @@ public class Treap
 		
 		System.out.println( "Inserts complete" );
 		tree.printTree(tree.root);
+		
+		TreapVisualisation.dispTreap(tree.root);
 	}
 }
