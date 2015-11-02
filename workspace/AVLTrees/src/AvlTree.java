@@ -19,16 +19,26 @@ public class AvlTree {
 		tree.insert(12);
 		tree.insert(26);
 
-		tree.insert(14);
-		tree.insert(7);
-		tree.insert(12);
-		tree.insert(8);
-
-		tree.insert(21);
-		tree.insert(27);
-		tree.insert(22);
-		tree.insert(25);
-		tree.insert(29);	
+//		tree.insert(14);
+//		tree.insert(7);
+//		tree.insert(12);
+//		tree.insert(8);
+//
+//		tree.insert(21);
+//		tree.insert(27);
+//		tree.insert(22);
+//		tree.insert(25);
+//		tree.insert(29);	
+		
+		tree.insert(2);
+		tree.insert(1);
+		tree.insert(2);
+		tree.insert(3);
+		tree.insert(1);
+		tree.insert(4);
+		tree.insert(4);
+		tree.insert(2);
+		
 
 
 		list = tree.inorder();
@@ -76,7 +86,8 @@ public class AvlTree {
 				}
 			}
 
-			//			avlBalance(subtreeRoot);
+//			this.root.recursiveFixHeight();
+//			avlBalance(subtreeRoot);
 
 
 			//			root.recursiveFixHeight();
@@ -94,20 +105,36 @@ public class AvlTree {
 
 
 	public void avlBalance(AvlNode subtreeRoot) {		
+		
+		if (Math.abs(subtreeRoot.balance()) > 2) {
+			System.out.println("Extreme imbalance: node "+subtreeRoot.key+" ("+subtreeRoot.balance()+")");
+		}
 
 		if (subtreeRoot.balance() == -2) { //left subtree is taller
-			if ( subtreeRoot.leftChild.rightChild.height >= subtreeRoot.leftChild.leftChild.height ) {
+			if ( subtreeRoot.leftChild.rightChild.getHeight() >= subtreeRoot.leftChild.leftChild.getHeight() ) {
 				subtreeRoot.leftChild = leftRotate(subtreeRoot.leftChild);
 			}
 			subtreeRoot = rightRotate(subtreeRoot);
 		} else if (subtreeRoot.balance() == 2) { //right subtree is taller
-			if ( subtreeRoot.rightChild.leftChild.height >= subtreeRoot.rightChild.rightChild.height ) {
+			if ( subtreeRoot.rightChild.leftChild.getHeight() >= subtreeRoot.rightChild.rightChild.getHeight() ) {
 				subtreeRoot.rightChild = rightRotate(subtreeRoot.rightChild);
 			}
 			subtreeRoot = leftRotate(subtreeRoot);
 		}
 		
-		root.recursiveFixHeight();
+		if (subtreeRoot == null) {
+			System.out.println("change root");
+		}
+		
+//		root.recursiveFixHeight();
+
+		// we did not reach the root yet
+//		if(subtreeRoot.parent!=null) {
+//			avlBalance(subtreeRoot.parent);
+//		} else {
+//			this.root = subtreeRoot;
+			//System.out.println("------------ Balancing finished ----------------");
+//		}
 
 	}
 
@@ -199,6 +226,8 @@ public class AvlTree {
 			}
 		}		
 
+		newSubtreeRoot.reviseHeight();
+		origSubtreeRoot.reviseHeight();
 
 		return newSubtreeRoot;
 	}
@@ -227,7 +256,9 @@ public class AvlTree {
 			}
 		}
 
-
+		newSubtreeRoot.reviseHeight();
+		origSubtreeRoot.reviseHeight();
+		
 		return newSubtreeRoot;
 	}
 
@@ -265,7 +296,7 @@ public class AvlTree {
 			p = n.parent.key;
 		}
 
-		System.out.println("Left: "+l+" Key: "+n+" Right: "+r+" Parent: "+p+" Balance: "+n.balance() + " Height: "+n.height);
+		System.out.println("Left: "+l+" Key: "+n+" Right: "+r+" Parent: "+p+" Balance: "+n.balance() + " Height: "+n.getHeight());
 
 		if(n.leftChild!=null) {
 			debug(n.leftChild);
