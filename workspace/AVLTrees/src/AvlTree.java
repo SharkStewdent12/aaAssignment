@@ -45,6 +45,8 @@ public class AvlTree {
 		System.out.println(list.toString());
 
 		tree.debug( tree.root );
+		
+		AvlVisualisation.dispAvlTree( tree.root );
 
 	}
 
