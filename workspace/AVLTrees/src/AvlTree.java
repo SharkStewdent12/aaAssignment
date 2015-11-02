@@ -122,9 +122,10 @@ public class AvlTree {
 			subtreeRoot = leftRotate(subtreeRoot);
 		}
 		
-		if (subtreeRoot == null) {
+		if (subtreeRoot.parent == null) {
 			System.out.println("change root");
-		}
+			this.root = subtreeRoot;
+		} 
 		
 //		root.recursiveFixHeight();
 
