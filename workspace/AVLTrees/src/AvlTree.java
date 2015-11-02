@@ -21,8 +21,19 @@ public class AvlTree {
 	 tree.insert(11);
 	 tree.insert(12);
 	 tree.insert(26);
+	 
+	 tree.insert(28);
+	 tree.insert(31);
+	 tree.insert(18);
+	 tree.insert(23);
+	 tree.insert(34);
+	 tree.insert(17);
+	 tree.insert(29);
+	 
 	 list = tree.inorder();
 	 System.out.println(list.toString());
+	 
+	 tree.debug(tree.root);
 	 
  }
  
@@ -113,7 +124,7 @@ public class AvlTree {
    recursiveBalance(cur.parent);
   } else {
    this.root = cur;
-   System.out.println("------------ Balancing finished ----------------");
+//   System.out.println("------------ Balancing finished ----------------");
   }
  }
 
