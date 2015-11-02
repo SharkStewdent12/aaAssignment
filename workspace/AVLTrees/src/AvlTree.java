@@ -1,9 +1,6 @@
 
 import java.util.ArrayList;
 
-/**
- * This class is the complete and tested implementation of an AVL-tree.
- */
 public class AvlTree {
 
 	protected AvlNode root; // the root node
@@ -21,19 +18,37 @@ public class AvlTree {
 		tree.insert(11);
 		tree.insert(12);
 		tree.insert(26);
+
+//		tree.insert(14);
+//		tree.insert(7);
+//		tree.insert(12);
+//		tree.insert(8);
+//
+//		tree.insert(21);
+//		tree.insert(27);
+//		tree.insert(22);
+//		tree.insert(25);
+//		tree.insert(29);	
+		
+//		tree.insert(2);
+//		tree.insert(1);
+//		tree.insert(2);
+//		tree.insert(3);
+//		tree.insert(1);
+//		tree.insert(4);
+//		tree.insert(4);
+//		tree.insert(2);
+		
+
+
 		list = tree.inorder();
 		System.out.println(list.toString());
 
+		tree.debug( tree.root );
+
 	}
 
-	/***************************** Core Functions ************************************/
 
-	/**
-	 * Add a new element with key "k" into the tree.
-	 * 
-	 * @param k
-	 *            The key of the new node.
-	 */
 	public void insert(int k) {
 		// create new node
 		AvlNode n = new AvlNode(k);
@@ -41,95 +56,96 @@ public class AvlTree {
 		insertAVL(this.root,n);
 	}
 
-	/**
-	 * Recursive method to insert a node into a tree.
-	 * 
-	 * @param subtreeRoot The node currently compared, usually you start with the root.
-	 * @param newNode The node to be inserted.
-	 */
+
 	public void insertAVL(AvlNode subtreeRoot, AvlNode newNode) {
 		// If  node to compare is null, the node is inserted. If the root is null, it is the root of the tree.
 		if(subtreeRoot==null) {
 			this.root=newNode;
 		} else {
-
-			// If compare node is smaller, continue with the left node
-			if(newNode.key<subtreeRoot.key) {
+			// Key smaller, send left
+			if(newNode.key<subtreeRoot.key) { //free leaf, add node
 				if(subtreeRoot.leftChild==null) {
 					subtreeRoot.leftChild = newNode;
 					newNode.parent = subtreeRoot;
 
-					// Node is inserted now, continue checking the balance
-					recursiveBalance(subtreeRoot);
-				} else {
+					root.recursiveFixHeight();;
+					avlBalance(subtreeRoot);
+				} else { //insert into left subtree
 					insertAVL(subtreeRoot.leftChild,newNode);
 				}
-
-			} else if(newNode.key>subtreeRoot.key) {
-				if(subtreeRoot.rightChild==null) {
+				// Key larger (or equal), send right
+			} else {
+				if(subtreeRoot.rightChild==null) { //free leaf, add node
 					subtreeRoot.rightChild = newNode;
 					newNode.parent = subtreeRoot;
 
-					// Node is inserted now, continue checking the balance
-					recursiveBalance(subtreeRoot);
-				} else {
+					root.recursiveFixHeight();
+					avlBalance(subtreeRoot);
+				} else { //insert into right subtree
 					insertAVL(subtreeRoot.rightChild,newNode);
 				}
-			} else {
-				// do nothing: This node already exists
 			}
+
+//			this.root.recursiveFixHeight();
+//			avlBalance(subtreeRoot);
+
+
+			//			root.recursiveFixHeight();
+			//			newNode.reviseHeight();
+			//			subtreeRoot.reviseHeight();
+			//			if (subtreeRoot.leftChild != null){
+			//				subtreeRoot.leftChild.reviseHeight();
+			//			}
+			//			if (subtreeRoot.rightChild != null){
+			//				subtreeRoot.rightChild.reviseHeight();
+			//			}			
+
 		}
 	}
 
-	/**
-	 * Check the balance for each node recursivly and call required methods for balancing the tree until the root is reached.
-	 * 
-	 * @param curNode : The node to check the balance for, usually you start with the parent of a leaf.
-	 */
-	public void recursiveBalance(AvlNode curNode) {
 
-		// we do not use the balance in this class, but the store it anyway  
-		int balance = curNode.balance();
-
-		// check the balance
-		if(balance==-2) {
-
-			if(height(curNode.leftChild.leftChild)>=height(curNode.leftChild.rightChild)) {
-				curNode = rotateRight(curNode);
-			} else {
-				curNode = doubleRotateLeftRight(curNode);
-			}
-		} else if(balance==2) {
-			if(height(curNode.rightChild.rightChild)>=height(curNode.rightChild.leftChild)) {
-				curNode = rotateLeft(curNode);
-			} else {
-				curNode = doubleRotateRightLeft(curNode);
-			}
+	public void avlBalance(AvlNode subtreeRoot) {		
+		
+		if (Math.abs(subtreeRoot.balance()) > 2) {
+			System.out.println("Extreme imbalance: node "+subtreeRoot.key+" ("+subtreeRoot.balance()+")");
 		}
+
+		if (subtreeRoot.balance() == -2) { //left subtree is taller
+			if ( subtreeRoot.leftChild.rightChild.getHeight() >= subtreeRoot.leftChild.leftChild.getHeight() ) {
+				subtreeRoot.leftChild = leftRotate(subtreeRoot.leftChild);
+			}
+			subtreeRoot = rightRotate(subtreeRoot);
+		} else if (subtreeRoot.balance() == 2) { //right subtree is taller
+			if ( subtreeRoot.rightChild.leftChild.getHeight() >= subtreeRoot.rightChild.rightChild.getHeight() ) {
+				subtreeRoot.rightChild = rightRotate(subtreeRoot.rightChild);
+			}
+			subtreeRoot = leftRotate(subtreeRoot);
+		}
+		
+		if (subtreeRoot.parent == null) {
+			System.out.println("change root");
+			this.root = subtreeRoot;
+		} 
+		
+//		root.recursiveFixHeight();
 
 		// we did not reach the root yet
-		if(curNode.parent!=null) {
-			recursiveBalance(curNode.parent);
-		} else {
-			this.root = curNode;
-			System.out.println("------------ Balancing finished ----------------");
-		}
+//		if(subtreeRoot.parent!=null) {
+//			avlBalance(subtreeRoot.parent);
+//		} else {
+//			this.root = subtreeRoot;
+			//System.out.println("------------ Balancing finished ----------------");
+//		}
+
 	}
 
-	/**
-	 * Removes a node from the tree, if it is existent.
-	 */
+
 	public void remove(int node) {
 		// First we must find the node, after this we can delete it.
 		removeAVL(this.root,node);
 	}
 
-	/**
-	 * Finds a node and calls a method to remove the node.
-	 * 
-	 * @param subtreeRoot The node to start the search.
-	 * @param targetKey The KEY of node to remove.
-	 */
+
 	public void removeAVL(AvlNode subtreeRoot,int targetKey) {
 		if(subtreeRoot==null) {
 			return;
@@ -145,11 +161,7 @@ public class AvlTree {
 		}
 	}
 
-	/**
-	 * Removes a node from a AVL-Tree, while balancing will be done if necessary.
-	 * 
-	 * @param targetNode The node to be removed.
-	 */
+
 	public void removeFoundNode(AvlNode targetNode) {
 		AvlNode r;
 		// at least one child of q, q will be removed directly
@@ -187,108 +199,72 @@ public class AvlTree {
 				r.parent.rightChild = p;
 			}
 			// balancing must be done until the root is reached.
-			recursiveBalance(r.parent);
+			avlBalance(r.parent);
 		}
 		r = null;
 	}
 
-	/**
-	 * Left rotation using the given node.
-	 * 
-	 * 
-	 * @param n
-	 *            The node for the rotation.
-	 * 
-	 * @return The root of the rotated tree.
-	 */
-	public AvlNode rotateLeft(AvlNode n) {
 
-		AvlNode v = n.rightChild;
-		v.parent = n.parent;
+	public AvlNode leftRotate(AvlNode origSubtreeRoot) {
 
-		n.rightChild = v.leftChild;
+		AvlNode newSubtreeRoot = origSubtreeRoot.rightChild;
+		newSubtreeRoot.parent = origSubtreeRoot.parent;
 
-		if(n.rightChild!=null) {
-			n.rightChild.parent=n;
+		origSubtreeRoot.rightChild = newSubtreeRoot.leftChild;
+
+		if(origSubtreeRoot.rightChild!=null) {
+			origSubtreeRoot.rightChild.parent=origSubtreeRoot;
 		}
 
-		v.leftChild = n;
-		n.parent = v;
+		newSubtreeRoot.leftChild = origSubtreeRoot;
+		origSubtreeRoot.parent = newSubtreeRoot;
 
-		if(v.parent!=null) {
-			if(v.parent.rightChild==n) {
-				v.parent.rightChild = v;
-			} else if(v.parent.leftChild==n) {
-				v.parent.leftChild = v;
+		if(newSubtreeRoot.parent!=null) {
+			if(newSubtreeRoot.parent.rightChild==origSubtreeRoot) {
+				newSubtreeRoot.parent.rightChild = newSubtreeRoot;
+			} else if(newSubtreeRoot.parent.leftChild==origSubtreeRoot) {
+				newSubtreeRoot.parent.leftChild = newSubtreeRoot;
+			}
+		}		
+
+		newSubtreeRoot.reviseHeight();
+		origSubtreeRoot.reviseHeight();
+
+		return newSubtreeRoot;
+	}
+
+
+	public AvlNode rightRotate(AvlNode origSubtreeRoot) {
+
+		AvlNode newSubtreeRoot = origSubtreeRoot.leftChild;
+		newSubtreeRoot.parent = origSubtreeRoot.parent;
+
+		origSubtreeRoot.leftChild = newSubtreeRoot.rightChild;
+
+		if(origSubtreeRoot.leftChild!=null) {
+			origSubtreeRoot.leftChild.parent=origSubtreeRoot;
+		}
+
+		newSubtreeRoot.rightChild = origSubtreeRoot;
+		origSubtreeRoot.parent = newSubtreeRoot;
+
+
+		if(newSubtreeRoot.parent!=null) {
+			if(newSubtreeRoot.parent.rightChild==origSubtreeRoot) {
+				newSubtreeRoot.parent.rightChild = newSubtreeRoot;
+			} else if(newSubtreeRoot.parent.leftChild==origSubtreeRoot) {
+				newSubtreeRoot.parent.leftChild = newSubtreeRoot;
 			}
 		}
 
-
-		return v;
+		newSubtreeRoot.reviseHeight();
+		origSubtreeRoot.reviseHeight();
+		
+		return newSubtreeRoot;
 	}
 
-	/**
-	 * Right rotation using the given node.
-	 * 
-	 * @param n
-	 *            The node for the rotation
-	 * 
-	 * @return The root of the new rotated tree.
-	 */
-	public AvlNode rotateRight(AvlNode n) {
-
-		AvlNode v = n.leftChild;
-		v.parent = n.parent;
-
-		n.leftChild = v.rightChild;
-
-		if(n.leftChild!=null) {
-			n.leftChild.parent=n;
-		}
-
-		v.rightChild = n;
-		n.parent = v;
 
 
-		if(v.parent!=null) {
-			if(v.parent.rightChild==n) {
-				v.parent.rightChild = v;
-			} else if(v.parent.leftChild==n) {
-				v.parent.leftChild = v;
-			}
-		}
-
-
-		return v;
-	}
-	/**
-	 * 
-	 * @param u The node for the rotation.
-	 * @return The root after the double rotation.
-	 */
-	public AvlNode doubleRotateLeftRight(AvlNode u) {
-		u.leftChild = rotateLeft(u.leftChild);
-		return rotateRight(u);
-	}
-
-	/**
-	 * 
-	 * @param u The node for the rotation.
-	 * @return The root after the double rotation.
-	 */
-	public AvlNode doubleRotateRightLeft(AvlNode u) {
-		u.rightChild = rotateRight(u.rightChild);
-		return rotateLeft(u);
-	}
-
-	/***************************** Helper Functions ************************************/
-
-	/**
-	 * Returns the successor of a given node in the tree (search recursivly).
-	 * 
-	 * @param q The predecessor.
-	 * @return The successor of node q.
-	 */
 	public AvlNode successor(AvlNode q) {
 		if(q.rightChild!=null) {
 			AvlNode r = q.rightChild;
@@ -306,43 +282,7 @@ public class AvlTree {
 		}
 	}
 
-	/**
-	 * Calculating the "height" of a node.
-	 * 
-	 * @param cur
-	 * @return The height of a node (-1, if node is not existent eg. NULL).
-	 */
-	private int height(AvlNode cur) {
-		if(cur==null) {
-			return -1;
-		}
-		if(cur.leftChild==null && cur.rightChild==null) {
-			return 0;
-		} else if(cur.leftChild==null) {
-			return 1+height(cur.rightChild);
-		} else if(cur.rightChild==null) {
-			return 1+height(cur.leftChild);
-		} else {
-			return 1+maximum(height(cur.leftChild),height(cur.rightChild));
-		}
-	}
 
-	/**
-	 * Return the maximum of two integers.
-	 */
-	private int maximum(int a, int b) {
-		if(a>=b) {
-			return a;
-		} else {
-			return b;
-		}
-	}
-
-	/** 
-	 * Only for debugging purposes. Gives all information about a node.
-
-	 * @param n The node to write information about.
-	 */
 	public void debug(AvlNode n) {
 		int l = 0;
 		int r = 0;
@@ -357,7 +297,7 @@ public class AvlTree {
 			p = n.parent.key;
 		}
 
-		System.out.println("Left: "+l+" Key: "+n+" Right: "+r+" Parent: "+p+" Balance: "+n.balance());
+		System.out.println("Left: "+l+" Key: "+n+" Right: "+r+" Parent: "+p+" Balance: "+n.balance() + " Height: "+n.getHeight());
 
 		if(n.leftChild!=null) {
 			debug(n.leftChild);
@@ -368,25 +308,13 @@ public class AvlTree {
 	}
 
 
-	/**
-	 * Calculates the Inorder traversal of this tree.
-	 * 
-	 * @return A Array-List of the tree in inorder traversal.
-	 */
 	final protected ArrayList<AvlNode> inorder() {
 		ArrayList<AvlNode> ret = new ArrayList<AvlNode>();
 		inorder(root, ret);
 		return ret;
 	}
 
-	/**
-	 * Function to calculate inorder recursivly.
-	 * 
-	 * @param n
-	 *            The current node.
-	 * @param io
-	 *            The list to save the inorder traversal.
-	 */
+
 	final protected void inorder(AvlNode n, ArrayList<AvlNode> io) {
 		if (n == null) {
 			return;
